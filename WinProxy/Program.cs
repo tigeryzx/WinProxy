@@ -13,6 +13,8 @@ namespace WinProxy
 
         static void Main(string[] args)
         {
+            //args = new string[] { "fun=CopyFiles&paths=\"D:\\zixuan_file\\use\\other\\file1.xls\",\"D:\\zixuan_file\\use\\other\\file2.xls\"&tpath=Z:\\YZX&debug=1" };
+
             var paramStr = string.Empty;
 
             if (args != null && args.Length > 0)
@@ -27,18 +29,40 @@ namespace WinProxy
 
             if(fun == "CopyFiles" || fun == "MoveFiles")
             {
-                var paths = GetParamValue("paths");
+                var paths = SplitPaths(GetParamValue("paths"));
                 var tarPath = GetParamValue("tpath");
 
                 string msg = string.Empty;
                 if (fun == "CopyFiles")
-                    FileOperateProxy.CopyFiles(new string[] { paths }, tarPath, true, true, false, ref msg);
+                    FileOperateProxy.CopyFiles(paths, tarPath, true, true, false, ref msg);
                 else if (fun == "MoveFiles")
-                    FileOperateProxy.MoveFiles(new string[] { paths }, tarPath, true, true, false, ref msg);
+                    FileOperateProxy.MoveFiles(paths, tarPath, true, true, false, ref msg);
             }
 
             if (Is_Debug)
                 Console.ReadKey();
+        }
+
+        static string[] SplitPaths(string paths)
+        {
+            if (string.IsNullOrEmpty(paths))
+                return null;
+
+            List<string> resultPaths = new List<string>();
+
+            var split = GetParamValue("split", ",");
+            if (paths.IndexOf(split) != -1)
+            {
+                resultPaths.AddRange(paths.Replace("\"", string.Empty)
+                    .Split(new string[] { split }, StringSplitOptions.RemoveEmptyEntries)
+                    .ToArray());
+            }
+            else
+            {
+                resultPaths.Add(paths);
+            }
+
+            return resultPaths.ToArray();
         }
 
         static string GetParamValue(string key, string dvalue = "")
