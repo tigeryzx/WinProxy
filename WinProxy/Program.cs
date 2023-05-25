@@ -50,10 +50,12 @@ namespace WinProxy
 
             List<string> resultPaths = new List<string>();
 
+            paths = paths.Replace("\"", string.Empty);
+
             var split = GetParamValue("split", ",");
             if (paths.IndexOf(split) != -1)
             {
-                resultPaths.AddRange(paths.Replace("\"", string.Empty)
+                resultPaths.AddRange(paths
                     .Split(new string[] { split }, StringSplitOptions.RemoveEmptyEntries)
                     .ToArray());
             }
