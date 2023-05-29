@@ -1,3 +1,9 @@
+## 用途
+> 配合 Windows11 右键自定义插件，允许添加类似原生菜单‘发送到...U盘’的功能，调用了原生WIN API复制、移动，并非直接使用批处理命令复制、移动，好处在于遇到同名文件时能够像普通复制一样由用户自行选择处理
+
+### 相关插件
+> [ikas-mc/ContextMenuForWindows11](https://github.com/ikas-mc/ContextMenuForWindows11)
+
 ### 參數模板
 * fun
   * CopyFiles 文件複製到...

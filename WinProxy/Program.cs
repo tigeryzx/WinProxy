@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace WinProxy
 {
@@ -10,10 +12,11 @@ namespace WinProxy
     {
         static List<ParamInfo> ParamInfoList;
         static bool Is_Debug = false;
+        static StringBuilder OutPutMsg = new StringBuilder(); 
 
         static void Main(string[] args)
         {
-            //args = new string[] { "fun=CopyFiles&paths=\"D:\\zixuan_file\\use\\other\\file1.xls\",\"D:\\zixuan_file\\use\\other\\file2.xls\"&tpath=Z:\\YZX&debug=1" };
+             //args = new string[] { "fun=CopyFiles&paths=\"D:\\zixuan_file\\use\\other\\file1.xls\",\"D:\\zixuan_file\\use\\other\\file2.xls\"&tpath=Z:\\YZX&debug=1" };
 
             var paramStr = string.Empty;
 
@@ -39,8 +42,12 @@ namespace WinProxy
                     FileOperateProxy.MoveFiles(paths, tarPath, true, true, false, ref msg);
             }
 
-            if (Is_Debug)
-                Console.ReadKey();
+            if (Is_Debug && OutPutMsg.Length > 0)
+                MessageBox.Show(OutPutMsg.ToString(), 
+                    Application.ProductName + " debug info", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Information);
+                
         }
 
         static string[] SplitPaths(string paths)
@@ -50,13 +57,15 @@ namespace WinProxy
 
             List<string> resultPaths = new List<string>();
 
-            paths = paths.Replace("\"", string.Empty);
-
             var split = GetParamValue("split", ",");
-            if (paths.IndexOf(split) != -1)
+            var inSplit = "|";
+
+            paths = paths.Trim('"').Replace("\"" + split + "\"", inSplit);
+
+            if (paths.IndexOf(inSplit) != -1)
             {
                 resultPaths.AddRange(paths
-                    .Split(new string[] { split }, StringSplitOptions.RemoveEmptyEntries)
+                    .Split(new string[] { inSplit }, StringSplitOptions.RemoveEmptyEntries)
                     .ToArray());
             }
             else
@@ -77,9 +86,9 @@ namespace WinProxy
                 if (p != null)
                     result = p.Value;
             }
-            
+
             if (Is_Debug)
-                Console.WriteLine($"key:{key},value:{result}");
+                OutPutMsg.AppendLine($"key:{key},value:{result}");
 
             return result;
         }
