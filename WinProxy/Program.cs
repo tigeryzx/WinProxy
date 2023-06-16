@@ -34,6 +34,21 @@ namespace WinProxy
             {
                 var paths = SplitPaths(GetParamValue("paths"));
                 var tarPath = GetParamValue("tpath");
+                var updateTime = GetParamValue("uptime", "N");
+
+                if(updateTime.ToUpper() == "Y")
+                {
+                    if (paths != null && paths.Count() > 0)
+                    {
+                        foreach(var path in paths)
+                        {
+                            var file = new System.IO.FileInfo(path);
+                            file.CreationTime = DateTime.Now;
+                            file.LastWriteTime = DateTime.Now;
+                            file.LastAccessTime = DateTime.Now;
+                        }
+                    }
+                }
 
                 string msg = string.Empty;
                 if (fun == "CopyFiles")
