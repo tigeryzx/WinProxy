@@ -16,7 +16,7 @@ namespace WinProxy
 
         static void Main(string[] args)
         {
-             //args = new string[] { "fun=CopyFiles&paths=\"D:\\zixuan_file\\use\\other\\file1.xls\",\"D:\\zixuan_file\\use\\other\\file2.xls\"&tpath=Z:\\YZX&debug=1" };
+            //args = new string[] { "fun=CopyFiles&uptime=Y&split=$&paths=\"C:\\Users\\yzx\\Desktop\\新建文件夹\\O1\\12684-4125349450-RAW photo, best quality, masterpiece, realistic, photo-realistic, ultra high res,_(little girl_1.4),(loli_1.4),(thin and small g.png\"$\"C:\\Users\\yzx\\Desktop\\新建文件夹\\O1\\12685-1527695989-RAW photo, best quality, masterpiece, realistic, photo-realistic, ultra high res,_(little girl_1.4),(loli_1.4),(thin and small g.png\"&tpath=C:\\Users\\yzx\\Desktop\\新建文件夹 (2)&debug=1" };
 
             var paramStr = string.Empty;
 
@@ -40,12 +40,20 @@ namespace WinProxy
                 {
                     if (paths != null && paths.Count() > 0)
                     {
-                        foreach(var path in paths)
+                        try
                         {
-                            var file = new System.IO.FileInfo(path);
-                            file.CreationTime = DateTime.Now;
-                            file.LastWriteTime = DateTime.Now;
-                            file.LastAccessTime = DateTime.Now;
+                            foreach (var path in paths)
+                            {
+                                var file = new System.IO.FileInfo(path);
+                                file.CreationTime = DateTime.Now;
+                                file.LastWriteTime = DateTime.Now;
+                                file.LastAccessTime = DateTime.Now;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                            throw;
                         }
                     }
                 }
@@ -75,7 +83,9 @@ namespace WinProxy
             var split = GetParamValue("split", ",");
             var inSplit = "|";
 
-            paths = paths.Trim('"').Replace("\"" + split + "\"", inSplit);
+            paths = paths.Trim('"')
+                .Replace("\"" + split + "\"", inSplit)
+                .Replace(split, inSplit);
 
             if (paths.IndexOf(inSplit) != -1)
             {
